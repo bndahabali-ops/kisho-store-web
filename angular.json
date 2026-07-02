@@ -32,6 +32,11 @@
                 "glob": "_redirects",
                 "input": "src",
                 "output": "/"
+              },
+              {
+                "glob": "vercel.json",
+                "input": "src",
+                "output": "/"
               }
             ],
             "styles": [

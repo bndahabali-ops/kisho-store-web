@@ -17,7 +17,7 @@
     <div class="pd-image-col">
       <div class="image-container">
         <img
-          [src]="selectedVariant?.images?.[0] ?? 'assets/placeholder.png'"
+          [src]="selectedVariant?.images?.[selectedImageIndex] ?? 'assets/placeholder.png'"
           [alt]="product.title"
           class="pd-img"
         />
@@ -27,7 +27,8 @@
         <div 
           *ngFor="let img of selectedVariant?.images; let i = index" 
           class="thumb-wrapper"
-          [class.active]="i === 0"
+          [class.active]="i === selectedImageIndex"
+          (click)="selectImage(i)"
         >
           <img [src]="img" alt="Product detail thumbnail" />
         </div>

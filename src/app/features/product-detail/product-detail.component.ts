@@ -20,6 +20,7 @@ export class ProductDetailComponent implements OnInit {
   error = false;
 
   selectedVariantIndex = 0;
+  selectedImageIndex = 0;
   selectedSize: string | null = null;
   quantity = 1;
   addedToCartSuccess = false;
@@ -52,6 +53,7 @@ export class ProductDetailComponent implements OnInit {
         this.product = p;
         this.loading = false;
         this.selectedVariantIndex = 0;
+        this.selectedImageIndex = 0;
         this.selectedSize = null;
         this.quantity = 1;
         this.cdr.markForCheck();
@@ -121,8 +123,14 @@ export class ProductDetailComponent implements OnInit {
 
   selectVariant(index: number): void {
     this.selectedVariantIndex = index;
+    this.selectedImageIndex = 0;
     this.selectedSize = null; // reset selected size
     this.quantity = 1; // reset quantity
+    this.cdr.markForCheck();
+  }
+
+  selectImage(index: number): void {
+    this.selectedImageIndex = index;
     this.cdr.markForCheck();
   }
 
