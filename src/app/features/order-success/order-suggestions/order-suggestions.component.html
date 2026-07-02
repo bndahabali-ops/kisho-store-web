@@ -1,0 +1,46 @@
+<div class="suggestions-container" *ngIf="loading() || (products() && products().length > 0)">
+  <h2 class="suggestions-title">COMPLETE THE LOOK</h2>
+  <p class="suggestions-subtitle">CURATED FOR YOUR STYLE</p>
+
+  <div class="suggestions-grid" *ngIf="loading()">
+    <!-- 4 Skeletons -->
+    <div class="skeleton-card" *ngFor="let item of [1, 2, 3, 4]">
+      <div class="skeleton-image"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-text title"></div>
+        <div class="skeleton-text category"></div>
+        <div class="skeleton-text price"></div>
+      </div>
+      <div class="skeleton-btn"></div>
+    </div>
+  </div>
+
+  <div class="suggestions-grid" *ngIf="!loading()">
+    <div class="product-card" *ngFor="let product of products()">
+      <div class="product-image-wrapper">
+        <img [src]="product?.images?.[0] || 'assets/images/placeholder.jpg'" [alt]="product?.name" class="product-image">
+        <span class="product-badge" *ngIf="product?.stock === 0">OUT OF STOCK</span>
+      </div>
+
+      <div class="product-info">
+        <span class="product-category">{{ (product?.category | categoryTranslate:'en') | uppercase }}</span>
+        <h3 class="product-name" [title]="product?.name">{{ product?.name }}</h3>
+        <div class="product-price">
+          {{ product?.price | number:'1.0-0' }} EGP
+        </div>
+      </div>
+
+      <button 
+        class="quick-add-btn" 
+        [disabled]="product?.stock === 0 || addingProductId() === product?._id"
+        [class.added]="addedProductId() === product?._id"
+        [class.loading]="addingProductId() === product?._id"
+        (click)="quickAdd(product)"
+      >
+        <span *ngIf="addedProductId() !== product?._id && addingProductId() !== product?._id">QUICK ADD</span>
+        <span *ngIf="addingProductId() === product?._id" class="loader"></span>
+        <span *ngIf="addedProductId() === product?._id">ADDED ✓</span>
+      </button>
+    </div>
+  </div>
+</div>

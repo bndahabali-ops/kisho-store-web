@@ -1,0 +1,81 @@
+<nav class="navbar" [class.navbar--scrolled]="isScrolled" aria-label="Main navigation">
+  <div class="navbar__inner container">
+
+    <!-- Logo -->
+    <a routerLink="/" class="navbar__logo" aria-label="Kisho Store Home">
+      <span class="logo-mark">K</span>
+      <span class="logo-text">KISHO</span>
+    </a>
+
+    <!-- Desktop Nav Links -->
+    <ul class="navbar__links" role="list">
+      <li *ngFor="let link of navLinks">
+        <a
+          [routerLink]="link.path"
+          class="navbar__link"
+          [class.navbar__link--active]="isActive(link.path)"
+          [attr.aria-current]="isActive(link.path) ? 'page' : null"
+        >
+          {{ link.label }}
+        </a>
+      </li>
+    </ul>
+
+    <!-- Right Actions -->
+    <div class="navbar__actions">
+      <!-- Cart Button -->
+      <button
+        id="navbar-cart-btn"
+        class="cart-btn"
+        (click)="goToCheckout()"
+        [attr.aria-label]="'Cart — ' + cartCount() + ' items'"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <span *ngIf="cartCount() > 0" class="cart-badge" aria-hidden="true">
+          {{ cartCount() > 99 ? '99+' : cartCount() }}
+        </span>
+      </button>
+
+      <!-- Mobile Hamburger -->
+      <button
+        id="navbar-hamburger"
+        class="hamburger"
+        [class.hamburger--open]="isMobileOpen"
+        (click)="toggleMobile()"
+        [attr.aria-expanded]="isMobileOpen"
+        aria-controls="mobile-menu"
+        aria-label="Toggle menu"
+      >
+        <span class="hamburger__bar"></span>
+        <span class="hamburger__bar"></span>
+        <span class="hamburger__bar"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div
+    id="mobile-menu"
+    class="mobile-menu"
+    [class.mobile-menu--open]="isMobileOpen"
+    role="navigation"
+    aria-label="Mobile navigation"
+  >
+    <ul role="list">
+      <li *ngFor="let link of navLinks">
+        <a
+          [routerLink]="link.path"
+          class="mobile-menu__link"
+          [class.mobile-menu__link--active]="isActive(link.path)"
+          (click)="isMobileOpen = false"
+        >
+          {{ link.label }}
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>

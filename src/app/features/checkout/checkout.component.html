@@ -1,0 +1,217 @@
+<!-- checkout.component.html — English, fully accessible -->
+<section class="checkout-page" aria-label="Checkout">
+
+  <div class="checkout-header container">
+    <p class="section-label">Almost There</p>
+    <h1 class="section-title">Complete Your Order</h1>
+    <p class="checkout-header__sub">Fill in your details and we'll contact you to confirm.</p>
+  </div>
+
+  <div class="checkout-layout container" #formCard>
+
+    <!-- ── LEFT: Form ─────────────────────────────────────────────────────── -->
+    <form
+      class="checkout-form glass-card"
+      [formGroup]="checkoutForm"
+      (ngSubmit)="onSubmit()"
+      novalidate
+      aria-label="Shipping & Order Form"
+    >
+
+      <!-- Global Error Banner -->
+      <div
+        *ngIf="globalError"
+        id="checkout-error-banner"
+        class="error-banner"
+        role="alert"
+        aria-live="assertive"
+      >
+        <span class="error-banner__icon">⚠</span>
+        <p>{{ globalError }}</p>
+      </div>
+
+      <!-- ── Shipping Details ─────────────────────────────────────────────── -->
+      <fieldset formGroupName="shippingAddress" class="form-section">
+        <legend class="form-section__title">Shipping Details</legend>
+
+        <div class="form-grid">
+
+          <!-- Full Name -->
+          <div class="form-field" [class.is-error]="getError(ctrl('shippingAddress.fullName'))">
+            <label class="form-label" for="fullName">Full Name <span class="required">*</span></label>
+            <input id="fullName" type="text" class="form-input"
+              formControlName="fullName" placeholder="e.g. Ahmed Mohamed"
+              autocomplete="name" aria-required="true" />
+            <span *ngIf="getError(ctrl('shippingAddress.fullName'))" class="form-error" role="alert">
+              {{ getError(ctrl('shippingAddress.fullName')) }}
+            </span>
+          </div>
+
+          <!-- Phone -->
+          <div class="form-field" [class.is-error]="getError(ctrl('shippingAddress.phone'))">
+            <label class="form-label" for="phone">Phone Number <span class="required">*</span></label>
+            <input id="phone" type="tel" class="form-input"
+              formControlName="phone" placeholder="01012345678"
+              autocomplete="tel" inputmode="numeric" maxlength="11" aria-required="true" />
+            <span *ngIf="getError(ctrl('shippingAddress.phone'))" class="form-error" role="alert">
+              {{ getError(ctrl('shippingAddress.phone')) }}
+            </span>
+            <!-- WhatsApp hint -->
+            <span class="wa-hint">
+              <svg width="13" height="13" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                <circle cx="16" cy="16" r="16" fill="#25D366"/>
+                <path fill="#fff" d="M22.5 9.5A9.15 9.15 0 0 0 16 7a9.17 9.17 0 0 0-7.95 13.77L7 25l4.35-1.14A9.14 9.14 0 0 0 16 25.17 9.17 9.17 0 0 0 22.5 9.5ZM16 23.83a7.6 7.6 0 0 1-3.88-1.06l-.28-.17-2.58.68.69-2.51-.18-.29A7.67 7.67 0 1 1 16 23.83Zm4.21-5.74c-.23-.12-1.36-.67-1.57-.75s-.36-.12-.52.12-.6.75-.73.9-.27.18-.5.06a6.27 6.27 0 0 1-1.85-1.14 6.94 6.94 0 0 1-1.28-1.59c-.13-.23 0-.35.1-.47s.23-.27.35-.4a1.61 1.61 0 0 0 .24-.4.44.44 0 0 0 0-.42c-.06-.12-.52-1.25-.71-1.71s-.38-.39-.52-.4h-.44a.85.85 0 0 0-.62.29 2.6 2.6 0 0 0-.81 1.93 4.52 4.52 0 0 0 .95 2.4 10.35 10.35 0 0 0 3.96 3.5c.55.24 1.13.44 1.72.6a4.14 4.14 0 0 0 1.9.12 2.39 2.39 0 0 0 1.57-1.11 1.94 1.94 0 0 0 .14-1.11c-.06-.1-.22-.16-.45-.28Z"/>
+              </svg>
+              هتوصلك رسالة تأكيد على واتساب على الرقم ده
+            </span>
+          </div>
+
+          <!-- Email -->
+          <div class="form-field" [class.is-error]="getError(ctrl('shippingAddress.email'))">
+            <label class="form-label" for="email">Email Address <span class="required">*</span></label>
+            <input id="email" type="email" class="form-input"
+              formControlName="email" placeholder="ahmed@example.com"
+              autocomplete="email" inputmode="email" aria-required="true" />
+            <span *ngIf="getError(ctrl('shippingAddress.email'))" class="form-error" role="alert">
+              {{ getError(ctrl('shippingAddress.email')) }}
+            </span>
+          </div>
+
+          <!-- City -->
+          <div class="form-field" [class.is-error]="getError(ctrl('shippingAddress.city'))">
+            <label class="form-label" for="city">City / Governorate <span class="required">*</span></label>
+            <select id="city" class="form-input form-select"
+              formControlName="city" aria-required="true">
+              <option value="" disabled>Select your city / governorate</option>
+              <option *ngFor="let zone of shippingZones" [value]="zone.value">{{ zone.name }}</option>
+            </select>
+            <span *ngIf="getError(ctrl('shippingAddress.city'))" class="form-error" role="alert">
+              {{ getError(ctrl('shippingAddress.city')) }}
+            </span>
+          </div>
+
+          <!-- Address — full width -->
+          <div class="form-field form-field--full" [class.is-error]="getError(ctrl('shippingAddress.address'))">
+            <label class="form-label" for="address">Detailed Address <span class="required">*</span></label>
+            <input id="address" type="text" class="form-input"
+              formControlName="address" placeholder="Building no., Street, District"
+              autocomplete="street-address" aria-required="true" />
+            <span *ngIf="getError(ctrl('shippingAddress.address'))" class="form-error" role="alert">
+              {{ getError(ctrl('shippingAddress.address')) }}
+            </span>
+          </div>
+
+          <!-- Notes — full width, optional -->
+          <div class="form-field form-field--full">
+            <label class="form-label" for="notes">
+              Delivery Notes <span class="optional">(optional)</span>
+            </label>
+            <textarea id="notes" class="form-input form-textarea"
+              formControlName="notes" placeholder="e.g. Call before delivery"
+              rows="3" maxlength="500"></textarea>
+            <span *ngIf="getError(ctrl('shippingAddress.notes'))" class="form-error" role="alert">
+              {{ getError(ctrl('shippingAddress.notes')) }}
+            </span>
+          </div>
+
+        </div>
+      </fieldset>
+
+      <!-- ── Payment Method ──────────────────────────────────────────────── -->
+      <fieldset class="form-section">
+        <legend class="form-section__title">Payment Method</legend>
+        <div class="payment-option" role="radio" aria-checked="true" tabindex="0">
+          <span class="payment-option__icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+          </span>
+          <div class="payment-option__info">
+            <strong>Cash on Delivery</strong>
+            <p>Pay when your order arrives at your door.</p>
+          </div>
+          <span class="payment-option__check" aria-hidden="true">✓</span>
+        </div>
+      </fieldset>
+
+      <!-- ── Submit ──────────────────────────────────────────────────────── -->
+      <button
+        id="checkout-submit-btn"
+        type="submit"
+        class="btn-primary submit-btn"
+        [class.loading]="isSubmitting()"
+        [disabled]="isSubmitting()"
+        aria-label="Place Order"
+      >
+        <span *ngIf="!isSubmitting()">
+          Place Order
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </span>
+        <span *ngIf="isSubmitting()" class="spinner" aria-label="Placing your order..."></span>
+      </button>
+
+    </form>
+
+    <!-- ── RIGHT: Order Summary ────────────────────────────────────────────── -->
+    <aside class="order-summary glass-card" aria-label="Order Summary">
+      <h2 class="order-summary__title">Order Summary</h2>
+
+      <ul class="order-summary__list" role="list">
+        <li
+          *ngFor="let item of cartItems()"
+          class="summary-item"
+          [class.summary-item--conflict]="isConflicting(item)"
+        >
+          <img class="summary-item__img"
+            [src]="item.image" [alt]="item.title"
+            width="64" height="64" loading="lazy" />
+
+          <div class="summary-item__info">
+            <p class="summary-item__name">{{ item.title }}</p>
+            <p class="summary-item__variant">
+              <span class="color-dot" [style.background]="item.colorHex" [attr.aria-label]="item.color"></span>
+              {{ item.color }} · {{ item.size }}
+            </p>
+            <p *ngIf="isConflicting(item)" class="conflict-tag" role="alert">
+              ⚠ Out of stock — update your cart
+            </p>
+          </div>
+
+          <div class="summary-item__right">
+            <span class="summary-item__qty">× {{ item.quantity }}</span>
+            <span class="summary-item__price">
+              {{ (item.discountPrice && item.discountPrice > 0 ? (item.basePrice - item.discountPrice) : item.basePrice) * item.quantity | number:'1.0-0' }} EGP
+            </span>
+          </div>
+        </li>
+      </ul>
+
+      <div class="order-totals">
+        <div class="totals-row">
+          <span>Subtotal</span>
+          <span>{{ cartTotal() | number:'1.0-0' }} EGP</span>
+        </div>
+        <div class="totals-row">
+          <span>Shipping</span>
+          <span *ngIf="selectedZoneFee() > 0; else noShippingSelected">
+            {{ selectedZoneFee() | number:'1.0-0' }} EGP
+            <small *ngIf="selectedZoneDelivery()" style="display: block; font-size: 0.75rem; color: var(--color-text-muted); text-align: right;">
+              Est: {{ selectedZoneDelivery() }}
+            </small>
+          </span>
+          <ng-template #noShippingSelected>
+            <span class="free-label" style="color: var(--color-text-muted);">Select City</span>
+          </ng-template>
+        </div>
+        <div class="totals-row totals-row--grand">
+          <span>Total</span>
+          <strong>{{ grandTotal() | number:'1.0-0' }} EGP</strong>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</section>

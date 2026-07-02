@@ -1,0 +1,57 @@
+<!-- order-success.component.html -->
+<div class="success-page" aria-label="Order placed successfully">
+
+  <div class="success-card glass-card" #card>
+
+    <!-- Check Icon -->
+    <div class="success-icon" aria-hidden="true">
+      <svg #checkIcon width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    </div>
+
+    <h1 class="success-card__title">Order Placed! 🖤</h1>
+    <p class="success-card__sub">
+      Thank you for your trust in KISHO. Your order has been registered successfully and will reach you soon.
+    </p>
+
+    <!-- Order Reference -->
+    <div class="order-ref" *ngIf="confirmation()">
+      <span class="order-ref__label">Order Reference</span>
+      <span class="order-ref__value">{{ confirmation()!.orderRef }}</span>
+    </div>
+
+    <!-- Order Details -->
+    <div class="order-details" *ngIf="confirmation()">
+      <div class="order-detail-row">
+        <span>Total Amount</span>
+        <strong>{{ confirmation()!.totalAmount | number:'1.0-0' }} EGP</strong>
+      </div>
+      <div class="order-detail-row">
+        <span>Status</span>
+        <span class="status-badge">Pending</span>
+      </div>
+      <div class="order-detail-row">
+        <span>Payment</span>
+        <strong>Cash on Delivery</strong>
+      </div>
+    </div>
+
+    <!-- CTA Buttons -->
+    <div class="success-actions">
+      <button id="success-shop-btn" class="btn-primary" (click)="goShop()">
+        Continue Shopping
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </button>
+      <button id="success-home-btn" class="btn-ghost" (click)="goHome()">Home</button>
+    </div>
+
+  </div>
+
+  <app-order-suggestions></app-order-suggestions>
+
+</div>

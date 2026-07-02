@@ -1,0 +1,168 @@
+<!-- shop.component.html -->
+<main class="shop-page">
+
+  <!-- ── Tech-Brutalist Frame & Monospace Metadata Header ──────────────── -->
+  <header class="shop-header">
+    <div class="shop-header__inner">
+      <div class="shop-header__meta-item">
+        COLLECTION: ARCHIVE_2026 // SYSTEM: READY_TO_WEAR
+      </div>
+      <div class="shop-header__meta-item shop-header__meta-item--right" *ngIf="!loading">
+        PIECES: [{{ pagination.total }}] // STATUS: OPERATIONAL
+      </div>
+    </div>
+  </header>
+
+  <!-- Cinematic Title Section -->
+  <section class="shop-hero container" aria-hidden="true">
+    <div class="shop-hero__accent-line"></div>
+    <span class="shop-hero__tag">KISHO ARCHIVES</span>
+    <h1 class="shop-hero__title">Catalog</h1>
+  </section>
+
+  <!-- ── Tech-Brutalist Filter & Search Controls ──────────────────────── -->
+  <div class="shop-controls border-y">
+    <div class="container shop-controls__inner">
+      <nav class="shop-cats" aria-label="Category filter">
+        <button
+          *ngFor="let cat of categories"
+          class="shop-cats__btn"
+          [class.active]="selectedCategory === cat"
+          (click)="onCategory(cat)"
+        >{{ (categoryLabels[cat] || 'ALL') | uppercase }}</button>
+      </nav>
+      <div class="shop-search">
+        <input
+          id="shop-search-input"
+          type="search"
+          placeholder="SEARCH COLLECTION..."
+          [value]="searchQuery"
+          (input)="onSearch($any($event.target).value)"
+          class="shop-search__input"
+          autocomplete="off"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Catalog Body: Skeleton / States / Grid ──────────────────────── -->
+  <section class="shop-body" aria-label="Product grid">
+
+    <!-- Skeleton loader (12 shimmer cards while loading) -->
+    <div *ngIf="loading" class="shop-skeleton container" aria-hidden="true">
+      <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]">
+        <div class="skeleton-card__img"></div>
+        <div class="skeleton-card__info">
+          <div class="skeleton-card__line skeleton-card__line--title"></div>
+          <div class="skeleton-card__line skeleton-card__line--price"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error state -->
+    <div *ngIf="error && !loading" class="shop-state shop-state--error container">
+      <span class="shop-state__icon">◌</span>
+      <p class="shop-state__msg">SYSTEM ERROR: UNABLE TO FETCH ARCHIVES</p>
+      <p class="shop-state__sub">Connection refused. Retrying handshake...</p>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!loading && !error && products.length === 0" class="shop-state container">
+      <span class="shop-state__icon">◌</span>
+      <p class="shop-state__msg">NO ARCHIVAL PIECES FOUND</p>
+      <p class="shop-state__sub">Modify query params or check other categories.</p>
+    </div>
+
+    <!-- Product grid — Structural border matrix -->
+    <ul
+      *ngIf="!loading && !error && products.length > 0"
+      class="shop-grid"
+      role="list"
+    >
+      <li
+        *ngFor="let product of products; trackBy: trackById"
+        class="shop-card"
+        role="listitem"
+        (click)="navigateToProduct(product._id)"
+        (keydown.enter)="navigateToProduct(product._id)"
+        tabindex="0"
+        [attr.aria-label]="product.title"
+      >
+        <ng-container *ngIf="product">
+          <!-- Card Image Container -->
+          <div class="shop-card__img-wrap">
+            <!-- Primary Image -->
+            <img
+              *ngIf="getProductImage(product) as imgSrc"
+              [src]="imgSrc"
+              [alt]="product.title"
+              class="shop-card__img shop-card__img--primary"
+              loading="lazy"
+            />
+            <!-- Secondary Image (Revealed on hover) -->
+            <img
+              *ngIf="getProductSecondImage(product) as imgSecSrc"
+              [src]="imgSecSrc"
+              [alt]="product.title"
+              class="shop-card__img shop-card__img--secondary"
+              loading="lazy"
+            />
+            <!-- Fallback placeholder when no image exists -->
+            <div
+              *ngIf="!getProductImage(product)"
+              class="shop-card__no-img"
+              aria-hidden="true"
+            ></div>
+            <span class="shop-card__cat">{{ (product.category | categoryTranslate:'en') | uppercase }}</span>
+          </div>
+
+          <!-- Card Details -->
+          <div class="shop-card__info">
+            <div class="shop-card__spec">SPEC: {{ (product.category | categoryTranslate:'en') | uppercase }}_2026 // TYPE: RAW</div>
+            <h2 class="shop-card__title">{{ product.title }}</h2>
+            <p class="shop-card__price">
+              <ng-container *ngIf="product.discountPrice && product.discountPrice > 0; else regularPrice">
+                <span class="price-discount">EGP {{ (product.basePrice - product.discountPrice) | number }}</span>
+                <span class="price-original">EGP {{ product.basePrice | number }}</span>
+              </ng-container>
+              <ng-template #regularPrice>
+                EGP {{ product.basePrice | number }}
+              </ng-template>
+            </p>
+          </div>
+        </ng-container>
+      </li>
+    </ul>
+
+  </section>
+
+  <!-- ── Pagination ───────────────────────────────────────────────────── -->
+  <nav
+    *ngIf="!loading && !error && pagination.totalPages > 1"
+    class="shop-pagination"
+    aria-label="Page navigation"
+  >
+    <button
+      class="shop-pagination__btn"
+      [disabled]="currentPage <= 1"
+      (click)="onPage(currentPage - 1)"
+      aria-label="Previous page"
+    >&#8592;</button>
+
+    <button
+      *ngFor="let p of getPages()"
+      class="shop-pagination__num"
+      [class.active]="p === currentPage"
+      (click)="onPage(p)"
+      [attr.aria-current]="p === currentPage ? 'page' : null"
+    >{{ p }}</button>
+
+    <button
+      class="shop-pagination__btn"
+      [disabled]="currentPage >= pagination.totalPages"
+      (click)="onPage(currentPage + 1)"
+      aria-label="Next page"
+    >&#8594;</button>
+  </nav>
+
+</main>

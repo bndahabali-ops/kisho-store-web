@@ -1,0 +1,440 @@
+.pd-wrap {
+  min-height: 90vh;
+  display: flex;
+  justify-content: center;
+  padding: 12vh 6vw;
+  background: #000000;
+  color: #ffffff;
+}
+
+.pd-content {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 6vw;
+  width: 100%;
+  max-width: 1300px;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+// ── Left Column: Media Gallery ───────────────────────────────────────────────
+.pd-image-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .image-container {
+    background: #0d0d0d;
+    border: 1px solid #1a1a1a;
+    border-radius: 4px;
+    overflow: hidden;
+    aspect-ratio: 3 / 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pd-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+
+    &:hover {
+      transform: scale(1.03);
+    }
+  }
+
+  .thumbnail-row {
+    display: flex;
+    gap: 10px;
+
+    .thumb-wrapper {
+      width: 70px;
+      height: 90px;
+      border: 1px solid #1a1a1a;
+      opacity: 0.5;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.3s ease;
+
+      &.active, &:hover {
+        opacity: 1;
+        border-color: #ffffff;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+}
+
+// ── Right Column: Info Details ───────────────────────────────────────────────
+.pd-info-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.pd-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+
+  .breadcrumb-link {
+    color: rgba(255, 255, 255, 0.4);
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #ffffff;
+    }
+  }
+
+  .divider {
+    color: rgba(255, 255, 255, 0.2);
+  }
+
+  .current-cat {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+.pd-title {
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.pd-price-row {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  
+  .price-val {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+
+    &--original {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.4);
+      text-decoration: line-through;
+      font-weight: 400;
+    }
+  }
+}
+
+.pd-desc {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 32px;
+}
+
+// ── Sections & Dividers ──────────────────────────────────────────────────────
+.border-t {
+  border-top: 1px solid #1a1a1a;
+}
+
+.pt-6 {
+  padding-top: 24px;
+}
+
+.pd-section {
+  margin-bottom: 24px;
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+
+    .section-label {
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.45);
+      text-transform: uppercase;
+    }
+
+    .selected-value {
+      font-weight: 500;
+      color: #ffffff;
+    }
+  }
+}
+
+// ── 1. Swatches Selector ─────────────────────────────────────────────────────
+.swatch-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  .swatch-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #262626;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    &.active {
+      border-color: #ffffff;
+      transform: scale(1.05);
+    }
+
+    .swatch-color {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: block;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+// ── 2. Sizes Grid ───────────────────────────────────────────────────────────
+.size-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+  gap: 8px;
+
+  .size-btn {
+    height: 46px;
+    border: 1px solid #1a1a1a;
+    background: transparent;
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.25s ease;
+
+    &:hover:not([disabled]) {
+      border-color: #ffffff;
+    }
+
+    &.active {
+      background: #ffffff;
+      color: #000000;
+      border-color: #ffffff;
+    }
+
+    &[disabled] {
+      opacity: 0.25;
+      cursor: not-allowed;
+      border-style: dashed;
+      text-decoration: line-through;
+    }
+  }
+}
+
+// ── 3. Quantity Picker ───────────────────────────────────────────────────────
+.purchase-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.quantity-picker {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #1a1a1a;
+  border-radius: 2px;
+  height: 46px;
+  background: #080808;
+
+  .qty-btn {
+    width: 44px;
+    height: 100%;
+    border: none;
+    background: transparent;
+    color: #ffffff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+
+    &:hover:not([disabled]) {
+      background: #121212;
+    }
+
+    &[disabled] {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  }
+
+  .qty-num {
+    width: 44px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: var(--font-mono, monospace);
+  }
+}
+
+.stock-left-msg {
+  display: block;
+  font-size: 0.75rem;
+  color: #ffaa00;
+  margin-top: 6px;
+  font-family: var(--font-mono, monospace);
+}
+
+// ── CTA Add to Bag ──────────────────────────────────────────────────────────
+.action-row {
+  width: 100%;
+
+  .btn-add-bag {
+    width: 100%;
+    height: 56px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+    &:hover:not([disabled]) {
+      background: #eaeaea;
+      transform: translateY(-1px);
+    }
+
+    &[disabled] {
+      background: transparent;
+      border: 1px solid #1a1a1a;
+      color: rgba(255, 255, 255, 0.3);
+      cursor: not-allowed;
+    }
+
+    &.success {
+      background: #10b981;
+      color: #ffffff;
+      border-color: #10b981;
+    }
+  }
+}
+
+// ── Streetwear Specifications ────────────────────────────────────────────────
+.pd-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  .spec-row {
+    display: flex;
+    align-items: flex-start;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.72rem;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+
+    .spec-index {
+      color: rgba(255, 255, 255, 0.2);
+      width: 32px;
+      flex-shrink: 0;
+    }
+
+    .spec-label {
+      color: rgba(255, 255, 255, 0.4);
+      width: 75px;
+      flex-shrink: 0;
+      font-weight: 600;
+    }
+
+    .spec-value {
+      color: rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+
+// ── Skeleton & States ────────────────────────────────────────────────────────
+.pd-state {
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  text-align: center;
+  padding: 8vh 0;
+
+  p {
+    color: rgba(255, 255, 255, 0.4);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    margin-top: 20px;
+  }
+
+  &.pd-state--err p {
+    color: #ef4444;
+  }
+}
+
+.shimmer-loader {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ── Morphing Screen Page Transition Overlay ──────────────────────────────────
+.pd-transition-wrap {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  pointer-events: none;
+  overflow: hidden;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pd-transition-svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.pd-transition-path {
+  will-change: attr;
+}

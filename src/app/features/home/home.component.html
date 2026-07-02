@@ -1,0 +1,393 @@
+<!-- home.component.html -->
+<div class="homepage-wrapper">
+
+  <!-- Background Column Guides -->
+  <div class="grid-guides" aria-hidden="true">
+    <div class="grid-guides__line"></div>
+    <div class="grid-guides__line"></div>
+    <div class="grid-guides__line"></div>
+    <div class="grid-guides__line"></div>
+  </div>
+
+  <!-- Three.js backdrop -->
+  <div #canvasHost class="canvas-viewport" aria-hidden="true"></div>
+
+  <!-- SLIDE 1: HERO -->
+  <div class="home-slide hero-slide">
+    <div class="slide-outer">
+      <div class="slide-inner">
+        <div class="slide-content">
+          <section class="hero-sec" aria-label="Hero">
+            <div class="hero-sec__video-wrap" #heroVideo>
+              <video class="hero-sec__video" autoplay muted playsinline loop preload="none"
+                poster="assets/hero_poster.jpg" aria-hidden="true">
+                <source src="assets/hero.webm" type="video/webm" />
+                <source src="assets/hero.mp4" type="video/mp4" />
+              </video>
+              <div class="hero-sec__overlay" aria-hidden="true"></div>
+            </div>
+
+            <div class="hero-frame" aria-hidden="true">
+              <div class="hero-frame__meta hero-frame__meta--left">BATCH_01 // DESIGNED IN EGYPT // GSM: 400</div>
+              <div class="hero-frame__meta hero-frame__meta--right">DROP: 01_PREMIUM_BASICS // FIT: OVERSIZED / BOXY //
+                FABRIC: 100% ORGANIC COTTON</div>
+            </div>
+
+            <!-- SVG Displacement Filter -->
+            <svg class="hero-svg-filters" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="kisho-glitch" x="-10%" y="-10%" width="120%" height="120%"
+                  color-interpolation-filters="sRGBLinear">
+                  <feTurbulence #feTurbulence type="turbulence" baseFrequency="0 0" numOctaves="3" seed="8"
+                    result="noise" />
+                  <feDisplacementMap #feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R"
+                    yChannelSelector="G" result="displaced" />
+                </filter>
+              </defs>
+            </svg>
+
+            <div class="container hero-sec__content">
+              <div class="hero-sec__badge-wrapper">
+                <span #heroBadge class="hero-sec__badge">Collection 2026</span>
+              </div>
+
+              <h1 class="hero-sec__title hero-sec__title--glitch" #heroHeadline #glitchTitle>
+                <span class="hero-line"><span class="hero-line__inner" #heroLine1>STRUCTURE.</span></span>
+                <span class="hero-line"><span class="hero-line__inner" #heroLine2>WEIGHT.</span></span>
+                <span class="hero-line"><span class="hero-line__inner" #heroLine3>PRECISION.</span></span>
+              </h1>
+
+              <p #heroSub class="hero-sec__subtitle">
+                Architectural drapery and minimalist geometry.<br />
+                Built for Egyptian climates, engineered for lasting silhouettes.
+              </p>
+
+              <div #heroCta class="hero-sec__cta">
+                <button id="home-shop-collection-btn" class="btn-primary" (click)="navigateToShop()">Explore
+                  Collection</button>
+                <a class="hero-sec__scroll-label" (click)="scrollToNext()"
+                  aria-label="Scroll to next section">Scroll</a>
+              </div>
+
+
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: PHILOSOPHY -->
+  <div class="home-slide concept-slide">
+    <div class="slide-outer">
+      <div class="slide-inner">
+        <div class="slide-content">
+          <section class="concept-sec text-section border-b" id="concept-trigger" aria-label="Philosophy">
+            <div class="container grid-two-col">
+              <div class="section-label-col border-r">
+                <span class="index-num">01</span>
+                <h2 class="section-tag animate-txt">Philosophy</h2>
+                <div class="sculpt-dock" #sculptDock aria-hidden="true"></div>
+              </div>
+              <div class="content-col padding-l">
+                <h3 class="statement-title animate-txt">A study of structural form, weight, and extreme minimalism.</h3>
+                <p class="statement-desc animate-txt">We reject the transient noise of modern fast fashion. Every Kisho
+                  piece is crafted with heavy-gauge, long-staple cotton, establishing a clean structure that defines
+                  your presence.</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="marquee-sec border-b" aria-label="Signature Highlights">
+            <div class="marquee-track" #marqueeLeft>
+              <div class="marquee-track__inner">
+                <span>400 GSM &bull; EGYPTIAN COTTON &bull; STRUCTURED DRAPE &bull; RAW MINIMALISM &bull; 400 GSM &bull;
+                  EGYPTIAN COTTON &bull; STRUCTURED DRAPE &bull; RAW MINIMALISM &bull; </span>
+              </div>
+            </div>
+            <div class="marquee-track" #marqueeRight>
+              <div class="marquee-track__inner">
+                <span>CRAFTED IN CAIRO &bull; UNCOMPROMISED PRECISION &bull; THE SIGNATURE SILHOUETTE &bull; CRAFTED IN
+                  CAIRO &bull; UNCOMPROMISED PRECISION &bull; THE SIGNATURE SILHOUETTE &bull; </span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: CRAFTSMANSHIP -->
+  <div class="home-slide details-slide">
+    <div class="slide-outer">
+      <div class="slide-inner">
+        <div class="slide-content">
+          <section class="details-sec text-section border-b" id="details-trigger" aria-label="Craftsmanship">
+            <div class="container grid-two-col">
+              <div class="section-label-col border-r" id="craft-label-col">
+                <span class="index-num">02</span>
+                <h2 class="section-tag animate-txt">The Craft</h2>
+              </div>
+              <div class="content-col padding-l">
+                <h3 class="statement-title animate-txt">Milled locally. Structured to last.</h3>
+                <p class="statement-desc animate-txt">Designed and spun in Egypt, our custom knit fabric maintains its
+                  silhouette through infinite wears and washes. Flatlock stitching, drop-shoulder designs, and dense
+                  ribbed necklines.</p>
+                <div class="specs-grid animate-txt">
+                  <div class="spec-item"><span class="spec-item__value">400 GSM</span><span
+                      class="spec-item__label">Heavyweight Knit</span></div>
+                  <div class="spec-item"><span class="spec-item__value">100%</span><span
+                      class="spec-item__label">Egyptian Cotton</span></div>
+                  <div class="spec-item"><span class="spec-item__value">Pre-Shrunk</span><span
+                      class="spec-item__label">Double Washed</span></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: GALLERY -->
+  <div class="home-slide bento-slide">
+    <div class="slide-outer">
+      <div class="slide-inner">
+        <div class="slide-content">
+          <section class="bento-sec border-b" id="bento-trigger" aria-label="Visual Gallery">
+            <canvas id="sandCanvas"></canvas>
+            <div class="bento-header container">
+              <span class="index-num">03</span>
+              <h2 class="section-tag">Visuals</h2>
+            </div>
+            <!-- Desktop Bento Grid (Hidden on Mobile) -->
+            <div class="bento-pin-spacer hide-on-mobile" #galleryWrap>
+              <div class="gallery-wrap">
+                <div class="gallery gallery--bento" id="gallery-8" #bentoGallery>
+                  <div class="gallery__item"><img src="assets/bento_tee.png" alt="Signature Tee flat lay"
+                      loading="lazy" /></div>
+                  <div class="gallery__item"><img src="assets/bento_model1.png" alt="Heavy white cotton shirt detail"
+                      loading="lazy" /></div>
+                  <div class="gallery__item"><img src="assets/bento_hoodie.png" alt="Structured black hoodie detail"
+                      loading="lazy" /></div>
+                  <div class="gallery__item"><img src="assets/bento_model2.png" alt="Minimalist raw architecture lines"
+                      loading="lazy" /></div>
+                  <div class="gallery__item"><img src="assets/bento_fabric.png" alt="Black waffle-knit fabric closeup"
+                      loading="lazy" /></div>
+                  <div class="gallery__item"><img src="assets/bento_details.png"
+                      alt="Drop shoulder silhouette model shot" loading="lazy" /></div>
+                  <div class="gallery__item"><img src="assets/bento_store.png"
+                      alt="Minimalist fashion boutique interior" loading="lazy" /></div>
+                  <div class="gallery__item"><img src="assets/bento_tee.png" alt="Core black knitwear detail"
+                      loading="lazy" /></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile Kinetic Canvas (Shown on Mobile) -->
+            <div class="mobile-gallery show-on-mobile">
+              
+              <!-- Description Header Info Card -->
+              <div class="mobile-gallery__desc-card">
+                <div class="desc-card__badge">KISHO CO.</div>
+                <h4 class="desc-card__title">DROP_01 // 400 GSM</h4>
+                <p class="desc-card__desc">Heavyweight loopback cotton. Oversized architectural silhouette.</p>
+              </div>
+
+              <!-- SECTION 02: Clean Horizontal Tape (Fluid Track) -->
+              <div class="mobile-section-header">
+                <span class="section-num">VOL. I // SEC. 02</span>
+                <h3 class="section-title">Fluid Track</h3>
+              </div>
+              <div class="mobile-gallery__track-wrapper">
+                <div class="mobile-gallery__track">
+                  <div class="mobile-gallery__track-inner">
+                    <div class="track-card">
+                      <div class="track-img-wrap">
+                        <img src="assets/bento_model1.png" alt="Heavy white cotton shirt detail" loading="lazy" />
+                      </div>
+                      <div class="track-info">
+                        <span class="track-title">WHITE SHIRT</span>
+                        <span class="track-num">01 / 04</span>
+                      </div>
+                    </div>
+                    <div class="track-card">
+                      <div class="track-img-wrap">
+                        <img src="assets/bento_hoodie.png" alt="Structured black hoodie detail" loading="lazy" />
+                      </div>
+                      <div class="track-info">
+                        <span class="track-title">BLACK HOODIE</span>
+                        <span class="track-num">02 / 04</span>
+                      </div>
+                    </div>
+                    <div class="track-card">
+                      <div class="track-img-wrap">
+                        <img src="assets/bento_model2.png" alt="Minimalist raw architecture lines" loading="lazy" />
+                      </div>
+                      <div class="track-info">
+                        <span class="track-title">RAW STRUCTURE</span>
+                        <span class="track-num">03 / 04</span>
+                      </div>
+                    </div>
+                    <div class="track-card">
+                      <div class="track-img-wrap">
+                        <img src="assets/bento_fabric.png" alt="Black waffle-knit fabric closeup" loading="lazy" />
+                      </div>
+                      <div class="track-info">
+                        <span class="track-title">WAFFLE DETAIL</span>
+                        <span class="track-num">04 / 04</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Clean Mobile Footer Spacer -->
+              <div class="mobile-gallery__footer-spacer"></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: NEW ARRIVALS — 3D Tilted Carousel -->
+  <div class="home-slide new-arrivals-slide">
+    <div class="slide-outer">
+      <div class="slide-inner">
+        <div class="slide-content">
+          <section class="new-arrivals-sec" id="new-arrivals-trigger" aria-label="New Arrivals" #newArrivalsSec>
+            <div class="nac__header container">
+              <span class="index-num">04</span>
+              <h2 class="section-tag">New Arrivals</h2>
+            </div>
+            <!-- Background Elements -->
+            <div class="nac__bg-spotlight" #nacSpotlight aria-hidden="true"></div>
+            <div class="nac__bg-grid" aria-hidden="true"></div>
+            <div class="nac__bg-glow" aria-hidden="true"></div>
+            <div class="nac__bg-orb nac__bg-orb--purple" aria-hidden="true"></div>
+            <div class="nac__bg-orb nac__bg-orb--gold" aria-hidden="true"></div>
+            <div class="nac__bg-watermark" aria-hidden="true">ARRIVALS</div>
+            <!-- Loading skeleton -->
+            <div class="nac__loading" *ngIf="isLoadingNewArrivals" aria-hidden="true">
+              <div class="nac__skeleton" *ngFor="let _ of [1,2,3,4]"></div>
+            </div>
+            <!-- 3D Carousel -->
+            <div class="nac__stage" *ngIf="!isLoadingNewArrivals && newArrivals.length > 0">
+              <div class="nac__track" #nacTrack>
+                <div *ngFor="let product of newArrivals; let i = index" class="nac__perspective-cell"
+                  [class.is-active]="nacActiveIndex === i">
+                  <div class="nac__card" [attr.data-nac-index]="i" (click)="nacGoTo(i)"
+                    [attr.aria-label]="'View ' + product.title">
+                    <div class="nac__img-wrap">
+                      <img *ngIf="getProductImage(product)" [src]="getProductImage(product)" [alt]="product.title"
+                        loading="lazy" class="nac__img" />
+                      <div class="nac__img-placeholder" *ngIf="!getProductImage(product)">NO IMAGE</div>
+                      <div class="nac__badge" *ngIf="product.discountPrice && product.discountPrice > 0">SALE</div>
+                    </div>
+                  </div>
+                  <div class="nac__meta">
+                    <span class="nac__title">{{ product.title }}</span>
+                    <span class="nac__price monospace">
+                      <span *ngIf="product.discountPrice && product.discountPrice > 0" class="nac__price-old">EGP {{
+                        product.basePrice | number }}</span>
+                      EGP {{ (product.discountPrice && product.discountPrice > 0 ? (product.basePrice -
+                      product.discountPrice) : product.basePrice) | number }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!-- Controls -->
+              <div class="nac__controls">
+                <button class="nac__btn" (click)="nacPrev()" [disabled]="nacActiveIndex === 0" aria-label="Previous">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </button>
+                <div class="nac__dots">
+                  <button *ngFor="let product of newArrivals; let i = index" class="nac__dot"
+                    [class.is-active]="nacActiveIndex === i" (click)="nacGoTo(i)"
+                    [attr.aria-label]="'Slide ' + (i + 1)"></button>
+                </div>
+                <button class="nac__btn" (click)="nacNext()" [disabled]="nacActiveIndex === newArrivals.length - 1"
+                  aria-label="Next">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </div>
+              <div class="nac__cta-wrap" *ngIf="newArrivals[nacActiveIndex]">
+                <button class="btn-primary" (click)="navigateToProduct(newArrivals[nacActiveIndex]._id)">View
+                  Product</button>
+              </div>
+            </div>
+            <div class="nac__empty" *ngIf="!isLoadingNewArrivals && newArrivals.length === 0">No new arrivals at the
+              moment. Check back soon.</div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: INDEX -->
+  <div class="home-slide categories-slide">
+    <div class="slide-outer">
+      <div class="slide-inner">
+        <div class="slide-content">
+          <section class="categories-sec text-section border-b" id="categories-trigger" aria-label="Categories">
+            <div class="container">
+              <div class="categories-header border-b">
+                <span class="index-num">05</span>
+                <h2 class="section-tag">Index</h2>
+              </div>
+              <div class="category-index-list" role="list">
+                <button *ngFor="let cat of categories; let i = index" class="category-index-row"
+                  [id]="'cat-row-' + cat.slug" (click)="navigateToShop(cat.slug)"
+                  [attr.aria-label]="'Shop ' + cat.label" role="listitem">
+                  <span class="category-index-row__num">0{{ i + 1 }}</span>
+                  <span class="category-index-row__label">{{ cat.label }}</span>
+                  <span class="category-index-row__arrow">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: CTA & FOOTER -->
+  <div class="home-slide cta-footer-slide">
+    <div class="slide-outer">
+      <div class="slide-inner">
+        <div class="slide-content">
+          <section class="cta-sec border-b" aria-label="Shop All">
+            <div class="container cta-sec__inner">
+              <h2 class="cta-sec__title">Enter the Space.</h2>
+              <p class="cta-sec__subtitle">Free delivery across Egypt. Cash on delivery. Secure fulfillment.</p>
+              <button id="cta-shop-collection-btn" class="btn-primary" (click)="navigateToShop()">Shop All
+                Products</button>
+            </div>
+          </section>
+          <footer class="footer-sec" role="contentinfo">
+            <div class="container footer-sec__inner">
+              <span class="footer-sec__brand">KISHO</span>
+              <p class="footer-sec__copy">&copy; 2026 Kisho Store. All rights reserved.</p>
+              <div class="footer-sec__links">
+                <a routerLink="/shop" class="footer-sec__link">Shop</a>
+                <a routerLink="/cart" class="footer-sec__link">Cart</a>
+                <a routerLink="/checkout" class="footer-sec__link">Checkout</a>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

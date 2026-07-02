@@ -1,0 +1,299 @@
+// navbar.component.scss
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: var(--nav-height);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+              border-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+              box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  &--scrolled {
+    background: rgba(5, 5, 5, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  &__inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: var(--transition-base);
+
+    &:hover {
+      .logo-mark {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        &::after {
+          left: 100%;
+          opacity: 1;
+        }
+      }
+      .logo-text {
+        letter-spacing: 0.12em;
+      }
+    }
+  }
+
+  &__links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+
+    @media (max-width: 768px) { display: none; }
+  }
+
+  &__link {
+    position: relative;
+    padding: var(--space-2) var(--space-5);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    text-decoration: none;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--color-text-primary);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transform: translateX(-50%);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    }
+
+    &:hover {
+      color: var(--color-text-primary);
+      &::after {
+        width: 40%;
+      }
+    }
+
+    &--active {
+      color: var(--color-text-primary);
+      &::after {
+        width: 75%;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+}
+
+// ── Cart Button ───────────────────────────────────────────────────────────────
+.cart-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  &:hover {
+    color: var(--color-text-primary);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+
+    svg {
+      transform: rotate(-5deg) scale(1.05);
+    }
+  }
+
+  svg {
+    transition: transform 0.2s ease;
+  }
+}
+
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: var(--color-text-primary);
+  color: var(--color-text-on-dark);
+  font-size: 10px;
+  font-weight: 800;
+  font-family: var(--font-display);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  animation: badge-pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes badge-pop {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
+// ── Hamburger ─────────────────────────────────────────────────────────────────
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 42px;
+  height: 42px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  @media (max-width: 768px) { display: flex; }
+
+  &__bar {
+    display: block;
+    height: 2px;
+    background: var(--color-text-primary);
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+  }
+
+  &--open {
+    .hamburger__bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger__bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger__bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  }
+}
+
+// ── Mobile Menu ───────────────────────────────────────────────────────────────
+.mobile-menu {
+  position: absolute;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  background: rgba(5, 5, 5, 0.95);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  padding: var(--space-4) var(--space-4) var(--space-6);
+  transform: translateY(-10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  &--open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  &__link {
+    display: block;
+    padding: var(--space-3) var(--space-5);
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+    &:hover, &--active {
+      color: var(--color-text-primary);
+      background: rgba(255, 255, 255, 0.05);
+      padding-left: var(--space-8);
+    }
+  }
+}
+
+// ── Logo (shared) ─────────────────────────────────────────────────────────────
+.logo-mark {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--gradient-btn);
+  color: #000;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--text-base);
+  border-radius: var(--radius-sm);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -150%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(45deg);
+    transition: all 0.6s ease;
+    opacity: 0;
+  }
+}
+
+.logo-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-lg);
+  letter-spacing: 0.08em;
+  color: var(--color-text-primary);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}

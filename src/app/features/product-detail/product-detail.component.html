@@ -1,0 +1,177 @@
+<div class="pd-wrap">
+  <!-- Loading & Error States -->
+  <div *ngIf="loading" class="pd-state">
+    <div class="shimmer-loader"></div>
+    <p>Loading collection details...</p>
+  </div>
+  
+  <div *ngIf="error" class="pd-state pd-state--err">
+    <p class="error-msg">Product not found or unavailable.</p>
+    <button class="btn-primary mt-4" routerLink="/shop">Return to Shop</button>
+  </div>
+
+  <!-- Main Product Detail -->
+  <div *ngIf="product && !loading && !error" class="pd-content">
+    
+    <!-- Left Column: Gallery / Images -->
+    <div class="pd-image-col">
+      <div class="image-container">
+        <img
+          [src]="selectedVariant?.images?.[0] ?? 'assets/placeholder.png'"
+          [alt]="product.title"
+          class="pd-img"
+        />
+      </div>
+      <!-- Minimalist thumbnail indicator list if multiple images exist -->
+      <div class="thumbnail-row" *ngIf="(selectedVariant?.images?.length ?? 0) > 1">
+        <div 
+          *ngFor="let img of selectedVariant?.images; let i = index" 
+          class="thumb-wrapper"
+          [class.active]="i === 0"
+        >
+          <img [src]="img" alt="Product detail thumbnail" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Product Info & Actions -->
+    <div class="pd-info-col">
+      <!-- Breadcrumb -->
+      <div class="pd-breadcrumb">
+        <a routerLink="/shop" class="breadcrumb-link">Shop</a>
+        <span class="divider">/</span>
+        <span class="current-cat">{{ (product.category | categoryTranslate:'en') | uppercase }}</span>
+      </div>
+
+      <!-- Header -->
+      <h1 class="pd-title">{{ product.title }}</h1>
+      <div class="pd-price-row">
+        <ng-container *ngIf="product.discountPrice && product.discountPrice > 0; else regularPrice">
+          <span class="price-val">EGP {{ (product.basePrice - product.discountPrice) | number }}</span>
+          <span class="price-val price-val--original">EGP {{ product.basePrice | number }}</span>
+        </ng-container>
+        <ng-template #regularPrice>
+          <span class="price-val">EGP {{ product.basePrice | number }}</span>
+        </ng-template>
+      </div>
+
+      <!-- Description -->
+      <p class="pd-desc">{{ product.description }}</p>
+
+      <!-- 1. Color Variants Section -->
+      <div class="pd-section border-t pt-6" *ngIf="product.variants?.length">
+        <div class="section-header">
+          <span class="section-label">Color:</span>
+          <span class="selected-value">{{ selectedVariant?.color | titlecase }}</span>
+        </div>
+        <div class="swatch-list">
+          <button
+            *ngFor="let variant of product.variants; let idx = index"
+            class="swatch-btn"
+            [class.active]="idx === selectedVariantIndex"
+            (click)="selectVariant(idx)"
+            [title]="variant.color"
+          >
+            <span 
+              class="swatch-color" 
+              [style.background-color]="getColorHex(variant.color)"
+            ></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Size Selector Section -->
+      <div class="pd-section border-t pt-6" *ngIf="selectedVariant?.sizes?.length">
+        <div class="section-header">
+          <span class="section-label">Size:</span>
+          <span class="selected-value">{{ selectedSize || 'Select size' }}</span>
+        </div>
+        <div class="size-list">
+          <button
+            *ngFor="let sizeOpt of selectedVariant?.sizes"
+            class="size-btn"
+            [class.active]="selectedSize === sizeOpt.size"
+            [class.out-of-stock]="sizeOpt.stock <= 0"
+            [disabled]="sizeOpt.stock <= 0"
+            (click)="selectSize(sizeOpt.size)"
+          >
+            {{ sizeOpt.size }}
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. Quantity & Add to Cart -->
+      <div class="pd-section border-t pt-6">
+        <div class="purchase-row" *ngIf="selectedSize">
+          <div class="quantity-col">
+            <span class="section-label mb-2 block">Quantity:</span>
+            <div class="quantity-picker">
+              <button 
+                class="qty-btn" 
+                (click)="decrementQuantity()" 
+                [disabled]="quantity <= 1"
+              >-</button>
+              <span class="qty-num">{{ quantity }}</span>
+              <button 
+                class="qty-btn" 
+                (click)="incrementQuantity()" 
+                [disabled]="quantity >= getMaxStock()"
+              >+</button>
+            </div>
+            <span class="stock-left-msg" *ngIf="getMaxStock() < 5 && getMaxStock() > 0">
+              Only {{ getMaxStock() }} remaining
+            </span>
+          </div>
+        </div>
+
+        <div class="action-row pt-6">
+          <button
+            class="btn-primary btn-add-bag"
+            [class.success]="addedToCartSuccess"
+            [disabled]="!selectedSize || getMaxStock() <= 0"
+            (click)="addToCart()"
+          >
+            <span *ngIf="!selectedSize">SELECT SIZE</span>
+            <span *ngIf="selectedSize && !addedToCartSuccess && getMaxStock() > 0">ADD TO BAG</span>
+            <span *ngIf="selectedSize && !addedToCartSuccess && getMaxStock() <= 0">OUT OF STOCK</span>
+            <span *ngIf="addedToCartSuccess">✔ ADDED TO BAG</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Extra Details / Monospace Specifications -->
+      <div class="pd-specs border-t mt-8 pt-6">
+        <div class="spec-row">
+          <span class="spec-index">01</span>
+          <span class="spec-label">FIT:</span>
+          <span class="spec-value">Premium drop-shoulder heavy box-fit.</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-index">02</span>
+          <span class="spec-label">FABRIC:</span>
+          <span class="spec-value">100% Organic combed Egyptian cotton (320 GSM).</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-index">03</span>
+          <span class="spec-label">CARE:</span>
+          <span class="spec-value">Machine wash cold, inside out. Hang dry.</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Morphing Screen Page Transition Overlay -->
+  <div class="pd-transition-wrap" aria-hidden="true" #transitionWrap>
+    <svg class="pd-transition-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="pd-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#121212" />
+          <stop offset="100%" stop-color="#000000" />
+        </linearGradient>
+      </defs>
+      <path class="pd-transition-path" fill="url(#pd-grad)" d="M 0 0 V 100 Q 50 100 100 100 V 0 z" #transitionPath />
+    </svg>
+  </div>
+</div>

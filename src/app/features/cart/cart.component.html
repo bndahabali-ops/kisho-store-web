@@ -1,0 +1,115 @@
+<main class="cart-page">
+  <header class="cart-header">
+    <div class="cart-header__inner container">
+      <div class="cart-header__meta-item">
+        SHOPPING BAG // SYSTEM: ACTIVE
+      </div>
+      <div class="cart-header__meta-item cart-header__meta-item--right" *ngIf="!cartService.isEmpty()">
+        TOTAL ITEMS: [{{ cartService.totalQuantity() }}]
+      </div>
+    </div>
+  </header>
+
+  <section class="cart-hero container">
+    <div class="cart-hero__accent-line"></div>
+    <span class="cart-hero__tag">YOUR SELECTION</span>
+    <h1 class="cart-hero__title">Shopping Bag</h1>
+  </section>
+
+  <div class="container cart-body">
+    <!-- Empty State -->
+    <div *ngIf="cartService.isEmpty()" class="cart-empty-state">
+      <span class="cart-empty-state__icon">◌</span>
+      <h2 class="cart-empty-state__title">YOUR BAG IS EMPTY</h2>
+      <p class="cart-empty-state__sub">Add pieces from the collection to get started.</p>
+      <a routerLink="/shop" class="btn-primary">CONTINUE SHOPPING</a>
+    </div>
+
+    <!-- Active Cart Grid -->
+    <div *ngIf="!cartService.isEmpty()" class="cart-grid">
+      <!-- Left: Item List -->
+      <div class="cart-items-column">
+        <div class="cart-item" *ngFor="let item of cartService.items(); trackBy: trackByKey">
+          <div class="cart-item__img-wrap" (click)="goToProduct(item.productId)">
+            <img [src]="item.image || 'assets/images/placeholder.jpg'" [alt]="item.title" class="cart-item__img">
+          </div>
+
+          <div class="cart-item__details">
+            <div class="cart-item__meta-row">
+              <span class="cart-item__cat">COLOR: {{ item.color | uppercase }}</span>
+              <span class="cart-item__cat">SIZE: {{ item.size | uppercase }}</span>
+            </div>
+            
+            <h3 class="cart-item__title" (click)="goToProduct(item.productId)">{{ item.title }}</h3>
+            
+            <div class="cart-item__price-wrap">
+              <ng-container *ngIf="item.discountPrice && item.discountPrice > 0; else regularPrice">
+                <span class="price-discount">EGP {{ (item.basePrice - item.discountPrice) | number }}</span>
+                <span class="price-original">EGP {{ item.basePrice | number }}</span>
+              </ng-container>
+              <ng-template #regularPrice>
+                <span class="price-regular">EGP {{ item.basePrice | number }}</span>
+              </ng-template>
+            </div>
+
+            <!-- Quantity & Actions -->
+            <div class="cart-item__actions-row">
+              <div class="quantity-picker">
+                <button 
+                  class="qty-btn" 
+                  (click)="cartService.decrementItem(item.cartKey)"
+                  aria-label="Decrease quantity"
+                >-</button>
+                <span class="qty-num">{{ item.quantity }}</span>
+                <button 
+                  class="qty-btn" 
+                  (click)="cartService.incrementItem(item.cartKey)"
+                  [disabled]="item.quantity >= item.maxStock"
+                  aria-label="Increase quantity"
+                >+</button>
+              </div>
+
+              <button 
+                class="remove-btn" 
+                (click)="cartService.removeItem(item.cartKey)"
+                aria-label="Remove item"
+              >
+                REMOVE
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Summary Sidebar -->
+      <div class="cart-summary-column">
+        <div class="summary-card">
+          <h2 class="summary-card__title">ORDER SUMMARY</h2>
+          
+          <div class="summary-card__rows">
+            <div class="summary-row">
+              <span class="summary-row__label">SUBTOTAL</span>
+              <span class="summary-row__value">EGP {{ cartService.totalPrice() | number }}</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-row__label">SHIPPING</span>
+              <span class="summary-row__value shipping-free">FREE</span>
+            </div>
+            <div class="summary-row divider"></div>
+            <div class="summary-row total">
+              <span class="summary-row__label">GRAND TOTAL</span>
+              <span class="summary-row__value">EGP {{ cartService.totalPrice() | number }}</span>
+            </div>
+          </div>
+
+          <button class="btn-primary checkout-btn" (click)="goToCheckout()">
+            PROCEED TO CHECKOUT
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
