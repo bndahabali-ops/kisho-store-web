@@ -760,7 +760,7 @@
   padding: 8vh 0 0 0;
 }
 
-#sandCanvas {
+.bento-title-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -768,6 +768,88 @@
   height: 100%;
   z-index: 10;
   pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  overflow: hidden;
+
+  @media (max-width: 1023px) {
+    display: none !important;
+  }
+
+  .title-bg {
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 20vw, 15rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: rgba(255, 255, 255, 0.02); // extremely subtle base
+    position: absolute;
+    top: 38%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-transform: uppercase;
+  }
+
+  .title-outline {
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 20vw, 15rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.7);
+    position: absolute;
+    top: 38%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-transform: uppercase;
+    
+    // Mix blend mode to interact with background images dynamically
+    mix-blend-mode: difference;
+    
+    // Smooth floating animation
+    animation: textFloat 6s ease-in-out infinite alternate;
+  }
+
+  .title-sub {
+    font-family: var(--font-mono, monospace);
+    font-size: clamp(9px, 1.2vw, 12px);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.75);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    position: absolute;
+    bottom: 8%;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: var(--space-2) var(--space-6);
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--radius-full);
+    animation: subPulse 4s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes textFloat {
+  0% {
+    transform: translate(-50%, -50%) translateY(-6px);
+  }
+  100% {
+    transform: translate(-50%, -50%) translateY(6px);
+  }
+}
+
+@keyframes subPulse {
+  0% {
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0);
+  }
+  100% {
+    border-color: rgba(212, 175, 55, 0.4); // Subtle gold glow
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+  }
 }
 
 .bento-header,

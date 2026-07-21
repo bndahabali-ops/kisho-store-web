@@ -29,6 +29,7 @@ export interface Product {
   category: string | CategoryModel;
   variants: ProductVariant[];
   isNewArrival?: boolean;
+  sizeChartImage?: string;
   createdAt: string;
   updatedAt: string;
 }

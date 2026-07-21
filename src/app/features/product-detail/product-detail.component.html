@@ -44,8 +44,9 @@
         <span class="current-cat">{{ (product.category | categoryTranslate:'en') | uppercase }}</span>
       </div>
 
-      <!-- Header -->
-      <h1 class="pd-title">{{ product.title }}</h1>
+      <!-- Header & Identity -->
+      <!-- displayTitle injects the selected color into the title string dynamically -->
+      <h1 class="pd-title">{{ displayTitle }}</h1>
       <div class="pd-price-row">
         <ng-container *ngIf="product.discountPrice && product.discountPrice > 0; else regularPrice">
           <span class="price-val">EGP {{ (product.basePrice - product.discountPrice) | number }}</span>
@@ -55,9 +56,6 @@
           <span class="price-val">EGP {{ product.basePrice | number }}</span>
         </ng-template>
       </div>
-
-      <!-- Description -->
-      <p class="pd-desc">{{ product.description }}</p>
 
       <!-- 1. Color Variants Section -->
       <div class="pd-section border-t pt-6" *ngIf="product.variants?.length">
@@ -75,7 +73,8 @@
           >
             <span 
               class="swatch-color" 
-              [style.background-color]="getColorHex(variant.color)"
+              [style.background-color]="variant.colorHex || getColorHex(variant.color)"
+              [title]="variant.color"
             ></span>
           </button>
         </div>
@@ -84,8 +83,25 @@
       <!-- 2. Size Selector Section -->
       <div class="pd-section border-t pt-6" *ngIf="selectedVariant?.sizes?.length">
         <div class="section-header">
-          <span class="section-label">Size:</span>
-          <span class="selected-value">{{ selectedSize || 'Select size' }}</span>
+          <div class="section-header__left">
+            <span class="section-label">Size:</span>
+            <span class="selected-value">{{ selectedSize || 'Select size' }}</span>
+          </div>
+          <button
+            *ngIf="product?.sizeChartImage"
+            class="size-guide-btn"
+            (click)="openSizeChart()"
+            type="button"
+            aria-label="Open size guide chart"
+          >
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="currentColor"/>
+              <line x1="3" y1="4" x2="9" y2="4" stroke="currentColor" stroke-width="1"/>
+              <line x1="3" y1="6" x2="9" y2="6" stroke="currentColor" stroke-width="1"/>
+              <line x1="3" y1="8" x2="7" y2="8" stroke="currentColor" stroke-width="1"/>
+            </svg>
+            SIZE GUIDE
+          </button>
         </div>
         <div class="size-list">
           <button
@@ -101,66 +117,159 @@
         </div>
       </div>
 
-      <!-- 3. Quantity & Add to Cart -->
+      <!-- 3. Quantity & Add to Cart (CTA) Section -->
       <div class="pd-section border-t pt-6">
-        <div class="purchase-row" *ngIf="selectedSize">
-          <div class="quantity-col">
-            <span class="section-label mb-2 block">Quantity:</span>
-            <div class="quantity-picker">
+        <div class="purchase-cta-row">
+          <div class="quantity-picker-wrap">
+            <span class="section-label block mb-2">QTY:</span>
+            <div class="quantity-picker" [class.disabled]="!selectedSize">
               <button 
                 class="qty-btn" 
                 (click)="decrementQuantity()" 
-                [disabled]="quantity <= 1"
+                [disabled]="!selectedSize || quantity <= 1"
               >-</button>
               <span class="qty-num">{{ quantity }}</span>
               <button 
                 class="qty-btn" 
                 (click)="incrementQuantity()" 
-                [disabled]="quantity >= getMaxStock()"
+                [disabled]="!selectedSize || quantity >= getMaxStock()"
               >+</button>
             </div>
-            <span class="stock-left-msg" *ngIf="getMaxStock() < 5 && getMaxStock() > 0">
-              Only {{ getMaxStock() }} remaining
-            </span>
+          </div>
+
+          <div class="action-btn-wrap">
+            <span class="section-label block mb-2 invisible-label">&nbsp;</span>
+            <button
+              class="btn-primary btn-add-bag"
+              [class.success]="addedToCartSuccess"
+              [disabled]="!selectedSize || getMaxStock() <= 0"
+              (click)="addToCart()"
+            >
+              <span *ngIf="!selectedSize">SELECT SIZE</span>
+              <span *ngIf="selectedSize && !addedToCartSuccess && getMaxStock() > 0">ADD TO BAG</span>
+              <span *ngIf="selectedSize && !addedToCartSuccess && getMaxStock() <= 0">OUT OF STOCK</span>
+              <span *ngIf="addedToCartSuccess">✔ ADDED TO BAG</span>
+            </button>
           </div>
         </div>
 
-        <div class="action-row pt-6">
-          <button
-            class="btn-primary btn-add-bag"
-            [class.success]="addedToCartSuccess"
-            [disabled]="!selectedSize || getMaxStock() <= 0"
-            (click)="addToCart()"
-          >
-            <span *ngIf="!selectedSize">SELECT SIZE</span>
-            <span *ngIf="selectedSize && !addedToCartSuccess && getMaxStock() > 0">ADD TO BAG</span>
-            <span *ngIf="selectedSize && !addedToCartSuccess && getMaxStock() <= 0">OUT OF STOCK</span>
-            <span *ngIf="addedToCartSuccess">✔ ADDED TO BAG</span>
-          </button>
-        </div>
+        <span class="stock-left-msg mt-3 block" *ngIf="selectedSize && getMaxStock() < 5 && getMaxStock() > 0">
+          Only {{ getMaxStock() }} remaining in stock
+        </span>
       </div>
 
-      <!-- Extra Details / Monospace Specifications -->
-      <div class="pd-specs border-t mt-8 pt-6">
-        <div class="spec-row">
-          <span class="spec-index">01</span>
-          <span class="spec-label">FIT:</span>
-          <span class="spec-value">Premium drop-shoulder heavy box-fit.</span>
+      <!-- 4. Expandable Accordions -->
+      <div class="pd-accordions border-t mt-8">
+        
+        <!-- Accordion 1: Description -->
+        <div class="accordion-item" [class.open]="expandedAccordions['description']">
+          <button class="accordion-header" (click)="toggleAccordion('description')">
+            <span class="accordion-title">DESCRIPTION</span>
+            <span class="accordion-icon"></span>
+          </button>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              <p class="pd-desc-text">{{ product.description }}</p>
+            </div>
+          </div>
         </div>
-        <div class="spec-row">
-          <span class="spec-index">02</span>
-          <span class="spec-label">FABRIC:</span>
-          <span class="spec-value">100% Organic combed Egyptian cotton (320 GSM).</span>
+
+        <!-- Accordion 2: Specs & Fabric -->
+        <div class="accordion-item" [class.open]="expandedAccordions['specs']">
+          <button class="accordion-header" (click)="toggleAccordion('specs')">
+            <span class="accordion-title">FIT & FABRIC</span>
+            <span class="accordion-icon"></span>
+          </button>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              <div class="pd-specs">
+                <div class="spec-row">
+                  <span class="spec-index">01</span>
+                  <span class="spec-label">FIT:</span>
+                  <span class="spec-value">Premium drop-shoulder heavy box-fit.</span>
+                </div>
+                <div class="spec-row">
+                  <span class="spec-index">02</span>
+                  <span class="spec-label">FABRIC:</span>
+                  <span class="spec-value">100% Organic combed Egyptian cotton (320 GSM).</span>
+                </div>
+                <div class="spec-row">
+                  <span class="spec-index">03</span>
+                  <span class="spec-label">CARE:</span>
+                  <span class="spec-value">Machine wash cold, inside out. Hang dry.</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="spec-row">
-          <span class="spec-index">03</span>
-          <span class="spec-label">CARE:</span>
-          <span class="spec-value">Machine wash cold, inside out. Hang dry.</span>
+
+        <!-- Accordion 3: Shipping & Returns -->
+        <div class="accordion-item" [class.open]="expandedAccordions['shipping']">
+          <button class="accordion-header" (click)="toggleAccordion('shipping')">
+            <span class="accordion-title">SHIPPING & RETURNS</span>
+            <span class="accordion-icon"></span>
+          </button>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              <p class="pd-shipping-text">
+                All orders are shipped via premium local couriers.
+              </p>
+              <div class="shipping-details mt-2">
+                <div class="shipping-row">
+                  <span class="shipping-label">Cairo & Giza:</span>
+                  <span class="shipping-value">1-2 business days</span>
+                </div>
+                <div class="shipping-row">
+                  <span class="shipping-label">Other Governorates:</span>
+                  <span class="shipping-value">2-4 business days</span>
+                </div>
+                <div class="shipping-row mt-2">
+                  <span class="shipping-label">Returns:</span>
+                  <span class="shipping-value">Easy 14-day exchange and returns. Items must be unworn and in original packaging.</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
       </div>
 
     </div>
 
+  </div>
+
+  <!-- Size Chart Modal / Lightbox -->
+  <div
+    class="size-chart-modal"
+    [class.open]="sizeChartOpen"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Size Chart"
+    (click)="closeSizeChart()"
+  >
+    <div class="size-chart-modal__panel" (click)="$event.stopPropagation()">
+      <div class="size-chart-modal__header">
+        <span class="size-chart-modal__title">SIZE GUIDE</span>
+        <button
+          class="size-chart-modal__close"
+          (click)="closeSizeChart()"
+          type="button"
+          aria-label="Close size guide"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <line x1="1" y1="1" x2="15" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="15" y1="1" x2="1" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="size-chart-modal__body">
+        <img
+          [src]="product?.sizeChartImage"
+          alt="Size Chart for {{ product?.title }}"
+          class="size-chart-modal__img"
+        />
+      </div>
+    </div>
   </div>
 
   <!-- Morphing Screen Page Transition Overlay -->

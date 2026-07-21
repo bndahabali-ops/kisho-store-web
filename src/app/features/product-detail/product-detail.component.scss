@@ -189,10 +189,16 @@
   .section-header {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     margin-bottom: 14px;
     font-size: 0.8rem;
     letter-spacing: 0.05em;
+
+    &__left {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
 
     .section-label {
       font-weight: 600;
@@ -246,6 +252,41 @@
 }
 
 // ── 2. Sizes Grid ───────────────────────────────────────────────────────────
+
+// Size Guide button (inline, next to SIZE label)
+.size-guide-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  svg {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.45);
+    color: #ffffff;
+
+    svg {
+      transform: scale(1.1);
+    }
+  }
+}
 .size-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
@@ -281,23 +322,55 @@
   }
 }
 
-// ── 3. Quantity Picker ───────────────────────────────────────────────────────
-.purchase-row {
+// ── 3. Quantity & Add to Cart (CTA) ──────────────────────────────────────────
+.purchase-cta-row {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   align-items: flex-end;
+  width: 100%;
+
+  @media (max-width: 480px) {
+    gap: 12px;
+  }
+}
+
+.quantity-picker-wrap {
+  width: 120px;
+  flex-shrink: 0;
+
+  @media (max-width: 480px) {
+    width: 100px;
+  }
+}
+
+.action-btn-wrap {
+  flex-grow: 1;
+}
+
+.invisible-label {
+  visibility: hidden;
+  height: 0;
+  margin: 0;
+  overflow: hidden;
 }
 
 .quantity-picker {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   border: 1px solid #1a1a1a;
   border-radius: 2px;
-  height: 46px;
+  height: 56px;
   background: #080808;
+  transition: opacity 0.3s ease, border-color 0.3s ease;
+
+  &.disabled {
+    opacity: 0.35;
+    pointer-events: none;
+    border-color: #121212;
+  }
 
   .qty-btn {
-    width: 44px;
+    width: 38px;
     height: 100%;
     border: none;
     background: transparent;
@@ -320,9 +393,9 @@
   }
 
   .qty-num {
-    width: 44px;
+    flex-grow: 1;
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 600;
     font-family: var(--font-mono, monospace);
   }
@@ -332,43 +405,179 @@
   display: block;
   font-size: 0.75rem;
   color: #ffaa00;
-  margin-top: 6px;
   font-family: var(--font-mono, monospace);
 }
 
-// ── CTA Add to Bag ──────────────────────────────────────────────────────────
-.action-row {
+.btn-add-bag {
   width: 100%;
+  height: 56px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
-  .btn-add-bag {
-    width: 100%;
-    height: 56px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    background: #ffffff;
-    color: #000000;
-    border: none;
-    border-radius: 2px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  &:hover:not([disabled]) {
+    background: #eaeaea;
+    transform: translateY(-1px);
+  }
 
-    &:hover:not([disabled]) {
-      background: #eaeaea;
-      transform: translateY(-1px);
+  &[disabled] {
+    background: transparent;
+    border: 1px solid #1a1a1a;
+    color: rgba(255, 255, 255, 0.3);
+    cursor: not-allowed;
+  }
+
+  &.success {
+    background: #10b981;
+    color: #ffffff;
+    border-color: #10b981;
+  }
+}
+
+// ── 4. Expandable Accordions ─────────────────────────────────────────────────
+.pd-accordions {
+  display: flex;
+  flex-direction: column;
+}
+
+.accordion-item {
+  border-bottom: 1px solid #1a1a1a;
+
+  &.open {
+    .accordion-icon {
+      &::after {
+        transform: rotate(90deg);
+        opacity: 0;
+      }
+      &::before {
+        background-color: #ffffff;
+      }
     }
 
-    &[disabled] {
-      background: transparent;
-      border: 1px solid #1a1a1a;
-      color: rgba(255, 255, 255, 0.3);
-      cursor: not-allowed;
+    .accordion-content {
+      grid-template-rows: 1fr;
+
+      .accordion-body {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.accordion-header {
+  width: 100%;
+  background: transparent;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 0;
+  cursor: pointer;
+  color: #ffffff;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-align: left;
+  outline: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+.accordion-icon {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, background-color 0.3s ease;
+  }
+
+  &::before {
+    top: 4px;
+    left: 0;
+    width: 10px;
+    height: 2px;
+  }
+
+  &::after {
+    top: 0;
+    left: 4px;
+    width: 2px;
+    height: 10px;
+  }
+}
+
+.accordion-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+
+  .accordion-body {
+    min-height: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding-bottom: 24px;
+  }
+}
+
+.pd-desc-text {
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0;
+}
+
+.pd-shipping-text {
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 16px 0;
+}
+
+.shipping-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+
+  .shipping-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    @media (min-width: 480px) {
+      flex-direction: row;
+      align-items: flex-start;
     }
 
-    &.success {
-      background: #10b981;
-      color: #ffffff;
-      border-color: #10b981;
+    .shipping-label {
+      color: rgba(255, 255, 255, 0.4);
+      width: 140px;
+      flex-shrink: 0;
+      font-weight: 600;
+    }
+
+    .shipping-value {
+      color: rgba(255, 255, 255, 0.8);
     }
   }
 }
@@ -468,4 +677,95 @@
 
 .pd-transition-path {
   will-change: attr;
+}
+
+// ── Size Chart Modal / Lightbox ──────────────────────────────────────────────
+.size-chart-modal {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10000; // Above page transition overlay (which is 9999)
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &.open {
+    opacity: 1;
+    pointer-events: auto;
+
+    .size-chart-modal__panel {
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  &__panel {
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.95) translateY(10px);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  &__title {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  &__close {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      color: #ffffff;
+      transform: scale(1.1);
+    }
+  }
+
+  &__body {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+    max-height: 80vh;
+  }
+
+  &__img {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 2px;
+  }
 }
