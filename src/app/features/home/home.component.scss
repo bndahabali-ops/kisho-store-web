@@ -201,6 +201,288 @@
   background: transparent;
 }
 
+// ── Slide 2 Product Strip ────────────────────────────────────────────────────
+.concept-products {
+  position: relative;
+  z-index: 5;
+  padding: 5vh 0 6vh;
+
+  // On tablet: tighten vertical space
+  @media (max-width: 1023px) {
+    padding: 3vh 0 4vh;
+  }
+
+  // On mobile: minimal padding — the rail handles its own spacing
+  @media (max-width: 767px) {
+    padding: 3vh 0 3vh;
+    // Override container full-bleed so the scroll rail reaches the screen edge
+    .container {
+      padding-right: 0;
+    }
+  }
+}
+
+// ── Shimmer animation ────────────────────────────────────────────────────────
+@keyframes cp-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+// Skeleton loader
+.cp-skeleton {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+
+  // Tablet: 2-col
+  @media (max-width: 1023px) and (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  // Mobile: horizontal scroll, show 1.4 cards
+  @media (max-width: 767px) {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-4);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: var(--space-2);
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+
+    @media (max-width: 767px) {
+      flex: 0 0 72vw;
+      scroll-snap-align: start;
+    }
+  }
+
+  &__img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: linear-gradient(90deg, #111 25%, #1c1c1c 50%, #111 75%);
+    background-size: 200% 100%;
+    animation: cp-shimmer 1.5s infinite;
+    border-radius: 2px;
+
+    @media (max-width: 767px) {
+      aspect-ratio: 1 / 1; // square on mobile saves vertical space
+    }
+  }
+
+  &__line {
+    height: 12px;
+    background: linear-gradient(90deg, #111 25%, #1c1c1c 50%, #111 75%);
+    background-size: 200% 100%;
+    animation: cp-shimmer 1.5s infinite;
+    border-radius: 2px;
+
+    &--title { width: 70%; }
+    &--price { width: 40%; }
+  }
+}
+
+// ── Product grid wrapper ─────────────────────────────────────────────────────
+// Desktop & tablet: CSS grid
+// Mobile: horizontal snap-scroll rail (never breaks 100vh slide)
+
+.cp-grid {
+  // Desktop default: 3-column portrait grid
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+
+  // Tablet (768–1023px): 2-column, square images
+  @media (max-width: 1023px) and (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  // Mobile (<768px): horizontal scroll rail — prevents vertical overflow
+  @media (max-width: 767px) {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-3);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-left: var(--space-4);  // align with page left edge
+    padding-right: var(--space-10); // right breathing room + fade hint
+    padding-bottom: var(--space-2);
+    &::-webkit-scrollbar { display: none; }
+  }
+}
+
+// Fade-right gradient hint on mobile — tells user "more cards right →"
+// Applied to the .container wrapper on mobile only
+.concept-products {
+  @media (max-width: 767px) {
+    .container {
+      position: relative;
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 60px;
+        height: 100%;
+        background: linear-gradient(to right, transparent, #000000);
+        pointer-events: none;
+        z-index: 2;
+      }
+    }
+  }
+}
+
+// ── Product card ──────────────────────────────────────────────────────────────
+.cp-card {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  border: 1px solid var(--kisho-line);
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  transition: border-color 0.3s ease;
+
+  // Mobile: fixed width cards in the scroll rail
+  @media (max-width: 767px) {
+    flex: 0 0 68vw;   // show ~1.4 cards — scroll affordance
+    scroll-snap-align: start;
+    min-width: 0;     // prevent flex blowout
+  }
+
+  // Active state — works for both :hover (desktop) and :focus (keyboard)
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.3);
+
+    .cp-card__img {
+      transform: scale(1.04);
+    }
+
+    .cp-card__cta {
+      opacity: 1;
+      letter-spacing: 0.22em;
+    }
+  }
+
+  &__img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;  // portrait on desktop/tablet
+    overflow: hidden;
+    background: #0a0a0a;
+
+    // Square on tablet (2-col, less vertical room)
+    @media (max-width: 1023px) and (min-width: 768px) {
+      aspect-ratio: 1 / 1;
+    }
+
+    // Square on mobile scroll rail
+    @media (max-width: 767px) {
+      aspect-ratio: 3 / 3.5;
+    }
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    display: block;
+  }
+
+  &__img-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #111;
+  }
+
+  &__badge {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #000;
+    background: #fff;
+    padding: 4px 8px;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-4) var(--space-4) 0;
+
+    @media (max-width: 767px) {
+      padding: var(--space-3) var(--space-3) 0;
+    }
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #ffffff;
+    line-height: 1.3;
+
+    @media (max-width: 767px) {
+      font-size: var(--text-xs);
+    }
+  }
+
+  &__price {
+    font-family: var(--font-mono, monospace);
+    font-size: var(--text-sm);
+    color: rgba(255, 255, 255, 0.55);
+    letter-spacing: 0.05em;
+
+    @media (max-width: 767px) {
+      font-size: var(--text-xs);
+    }
+
+    &--old {
+      text-decoration: line-through;
+      margin-right: var(--space-2);
+      color: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  &__cta {
+    margin-top: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.45);
+    text-transform: uppercase;
+    border-top: 1px solid var(--kisho-line);
+    opacity: 0.7;
+    transition: opacity 0.3s ease, letter-spacing 0.3s ease;
+
+    @media (max-width: 767px) {
+      padding: var(--space-2) var(--space-3);
+      margin-top: var(--space-2);
+    }
+  }
+}
+
 // ── Hero Section ─────────────────────────────────────────────────────────────
 .hero-sec {
   position: relative;

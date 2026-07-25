@@ -98,6 +98,54 @@
             </div>
           </section>
 
+          <!-- ── Slide 2 Product Strip ───────────────────────────────────── -->
+          <section class="concept-products border-b" aria-label="Featured Products">
+            <div class="container">
+              <!-- Skeleton while loading -->
+              <div class="cp-skeleton" *ngIf="isLoadingNewArrivals" aria-hidden="true">
+                <div class="cp-skeleton__card" *ngFor="let _ of [1,2,3]">
+                  <div class="cp-skeleton__img"></div>
+                  <div class="cp-skeleton__line cp-skeleton__line--title"></div>
+                  <div class="cp-skeleton__line cp-skeleton__line--price"></div>
+                </div>
+              </div>
+
+              <!-- 3 product cards -->
+              <div class="cp-grid" *ngIf="!isLoadingNewArrivals && newArrivals.length > 0">
+                <button
+                  *ngFor="let product of newArrivals.slice(0, 3)"
+                  class="cp-card"
+                  (click)="navigateToProduct(product._id)"
+                  [attr.aria-label]="'View ' + product.title"
+                >
+                  <div class="cp-card__img-wrap">
+                    <img
+                      *ngIf="getProductImage(product)"
+                      [src]="getProductImage(product)"
+                      [alt]="product.title"
+                      class="cp-card__img"
+                      loading="lazy"
+                    />
+                    <div class="cp-card__img-placeholder" *ngIf="!getProductImage(product)" aria-hidden="true"></div>
+                    <span class="cp-card__badge" *ngIf="product.discountPrice && product.discountPrice > 0">SALE</span>
+                  </div>
+                  <div class="cp-card__info">
+                    <span class="cp-card__title">{{ product.title }}</span>
+                    <span class="cp-card__price">
+                      <span *ngIf="product.discountPrice && product.discountPrice > 0" class="cp-card__price--old">
+                        EGP {{ product.basePrice | number }}
+                      </span>
+                      EGP {{ (product.discountPrice && product.discountPrice > 0
+                        ? (product.basePrice - product.discountPrice)
+                        : product.basePrice) | number }}
+                    </span>
+                  </div>
+                  <div class="cp-card__cta">SHOP NOW →</div>
+                </button>
+              </div>
+            </div>
+          </section>
+
           <section class="marquee-sec border-b" aria-label="Signature Highlights">
             <div class="marquee-track" #marqueeLeft>
               <div class="marquee-track__inner">
