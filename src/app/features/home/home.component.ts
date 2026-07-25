@@ -64,6 +64,23 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   newArrivals: Product[] = [];
   isLoadingNewArrivals = true;
   nacActiveIndex = 0;
+  peekDrawerOpen = false;
+
+  openPeekDrawer(): void {
+    if (window.matchMedia('(min-width: 768px)').matches) {
+      this.peekDrawerOpen = true;
+    }
+  }
+
+  closePeekDrawer(): void {
+    if (window.matchMedia('(min-width: 768px)').matches) {
+      this.peekDrawerOpen = false;
+    }
+  }
+
+  togglePeekDrawer(): void {
+    this.peekDrawerOpen = !this.peekDrawerOpen;
+  }
 
   private readonly heroScene = new HeroScene();
   private readonly _scrollTriggers: ScrollTrigger[] = [];
