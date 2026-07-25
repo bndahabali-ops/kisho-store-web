@@ -64,6 +64,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   newArrivals: Product[] = [];
   isLoadingNewArrivals = true;
   nacActiveIndex = 0;
+  activePreviewIndex = -1;
 
   private readonly heroScene = new HeroScene();
   private readonly _scrollTriggers: ScrollTrigger[] = [];
