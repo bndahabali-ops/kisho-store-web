@@ -71,6 +71,29 @@
 
 
             </div>
+
+            <!-- Hero Products Strip (Above-the-fold Quick Discovery) -->
+            <div class="hero-products-strip" *ngIf="!isLoadingNewArrivals && newArrivals.length > 0">
+              <span class="hero-products-strip__label">QUICK ACCESS:</span>
+              <div class="hero-products-strip__list">
+                <button
+                  *ngFor="let product of newArrivals.slice(0, 3)"
+                  class="hp-strip-card"
+                  (click)="navigateToProduct(product._id)"
+                  [attr.aria-label]="'Shop ' + product.title"
+                >
+                  <div class="hp-strip-card__img-wrap">
+                    <img *ngIf="getProductImage(product)" [src]="getProductImage(product)" [alt]="product.title" loading="lazy" />
+                  </div>
+                  <div class="hp-strip-card__info">
+                    <span class="hp-strip-card__title">{{ product.title }}</span>
+                    <span class="hp-strip-card__price">
+                      EGP {{ (product.discountPrice && product.discountPrice > 0 ? (product.basePrice - product.discountPrice) : product.basePrice) | number }}
+                    </span>
+                  </div>
+                </button>
+              </div>
+            </div>
           </section>
         </div>
       </div>
@@ -88,59 +111,60 @@
                 <span class="index-num">01</span>
                 <h2 class="section-tag animate-txt">Philosophy</h2>
                 <div class="sculpt-dock" #sculptDock aria-hidden="true"></div>
-
-                <!-- Brutalist Floating Image Preview (Desktop only) -->
-                <div class="concept-preview-pane hide-on-mobile" aria-hidden="true" *ngIf="!isLoadingNewArrivals && newArrivals.length > 0">
-                  <div 
-                    *ngFor="let product of newArrivals.slice(0, 3); let idx = index"
-                    class="concept-preview-pane__img-wrap"
-                    [class.active]="activePreviewIndex === idx"
-                  >
-                    <img *ngIf="getProductImage(product)" [src]="getProductImage(product)" [alt]="product.title" />
-                  </div>
-                </div>
               </div>
               <div class="content-col padding-l">
                 <h3 class="statement-title animate-txt">A study of structural form, weight, and extreme minimalism.</h3>
                 <p class="statement-desc animate-txt">We reject the transient noise of modern fast fashion. Every Kisho
                   piece is crafted with heavy-gauge, long-staple cotton, establishing a clean structure that defines
                   your presence.</p>
+              </div>
+            </div>
+          </section>
 
-                <!-- Modern Monospace Catalog Index (Brutalist Style) -->
-                <div class="concept-registry animate-txt" *ngIf="!isLoadingNewArrivals && newArrivals.length > 0">
-                  <span class="concept-registry__label">ARCHIVE REGISTRY // CLICK TO ENTER</span>
-                  <div class="concept-registry__list">
-                    <button
-                      *ngFor="let product of newArrivals.slice(0, 3); let i = index"
-                      class="registry-row"
-                      (mouseenter)="activePreviewIndex = i"
-                      (mouseleave)="activePreviewIndex = -1"
-                      (focus)="activePreviewIndex = i"
-                      (blur)="activePreviewIndex = -1"
-                      (click)="navigateToProduct(product._id)"
-                      [attr.aria-label]="'View product ' + product.title"
-                    >
-                      <span class="registry-row__num">0{{ i + 1 }}</span>
-                      
-                      <!-- Inline Mobile Image Thumbnail -->
-                      <div class="registry-row__mobile-thumb show-on-mobile">
-                        <img *ngIf="getProductImage(product)" [src]="getProductImage(product)" [alt]="product.title" loading="lazy" />
-                      </div>
-
-                      <span class="registry-row__title">{{ product.title }}</span>
-                      <span class="registry-row__dots" aria-hidden="true"></span>
-                      <span class="registry-row__price">
-                        <span *ngIf="product.discountPrice && product.discountPrice > 0" class="registry-row__price--old">
-                          EGP {{ product.basePrice | number }}
-                        </span>
-                        EGP {{ (product.discountPrice && product.discountPrice > 0
-                          ? (product.basePrice - product.discountPrice)
-                          : product.basePrice) | number }}
-                      </span>
-                      <span class="registry-row__btn">[ SHOP ]</span>
-                    </button>
-                  </div>
+          <!-- ── Slide 2 Product Strip ───────────────────────────────────── -->
+          <section class="concept-products border-b" aria-label="Featured Products">
+            <div class="container">
+              <!-- Skeleton while loading -->
+              <div class="cp-skeleton" *ngIf="isLoadingNewArrivals" aria-hidden="true">
+                <div class="cp-skeleton__card" *ngFor="let _ of [1,2,3]">
+                  <div class="cp-skeleton__img"></div>
+                  <div class="cp-skeleton__line cp-skeleton__line--title"></div>
+                  <div class="cp-skeleton__line cp-skeleton__line--price"></div>
                 </div>
+              </div>
+
+              <!-- 3 product cards -->
+              <div class="cp-grid" *ngIf="!isLoadingNewArrivals && newArrivals.length > 0">
+                <button
+                  *ngFor="let product of newArrivals.slice(0, 3)"
+                  class="cp-card"
+                  (click)="navigateToProduct(product._id)"
+                  [attr.aria-label]="'View ' + product.title"
+                >
+                  <div class="cp-card__img-wrap">
+                    <img
+                      *ngIf="getProductImage(product)"
+                      [src]="getProductImage(product)"
+                      [alt]="product.title"
+                      class="cp-card__img"
+                      loading="lazy"
+                    />
+                    <div class="cp-card__img-placeholder" *ngIf="!getProductImage(product)" aria-hidden="true"></div>
+                    <span class="cp-card__badge" *ngIf="product.discountPrice && product.discountPrice > 0">SALE</span>
+                  </div>
+                  <div class="cp-card__info">
+                    <span class="cp-card__title">{{ product.title }}</span>
+                    <span class="cp-card__price">
+                      <span *ngIf="product.discountPrice && product.discountPrice > 0" class="cp-card__price--old">
+                        EGP {{ product.basePrice | number }}
+                      </span>
+                      EGP {{ (product.discountPrice && product.discountPrice > 0
+                        ? (product.basePrice - product.discountPrice)
+                        : product.basePrice) | number }}
+                    </span>
+                  </div>
+                  <div class="cp-card__cta">SHOP NOW →</div>
+                </button>
               </div>
             </div>
           </section>
