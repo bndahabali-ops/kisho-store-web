@@ -608,6 +608,14 @@
     gap: var(--space-8);
     margin-top: var(--space-2);
 
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: var(--space-4);
+      width: 100%;
+      max-width: 320px;
+      margin: var(--space-4) auto 0;
+    }
+
     .btn-primary {
       padding: var(--space-4) var(--space-8);
       font-size: var(--text-sm);
@@ -621,6 +629,13 @@
       will-change: transform;
       transform-style: preserve-3d;
       backface-visibility: hidden;
+
+      @media (max-width: 768px) {
+        width: 100%;
+        padding: 14px var(--space-6);
+        font-size: var(--text-xs);
+        text-align: center;
+      }
 
       &:hover {
         background: transparent;
@@ -639,6 +654,12 @@
     color: rgba(255, 255, 255, 0.45);
     cursor: pointer;
     transition: color 0.3s ease;
+    padding: var(--space-2);
+
+    @media (max-width: 768px) {
+      font-size: 10px;
+      margin-top: var(--space-1);
+    }
 
     &:hover {
       color: #ffffff;
@@ -661,6 +682,10 @@ $peek-ease: cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: auto;
   width: auto;
   max-width: 92vw;
+
+  @media (max-width: 767px) {
+    display: none !important;
+  }
 
   // ── Collapsed Tab ───────────────────────────────────────────────────────────
   &__tab {
