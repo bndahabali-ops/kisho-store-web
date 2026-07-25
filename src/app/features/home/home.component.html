@@ -72,24 +72,63 @@
 
             </div>
 
-            <!-- Hero Products Strip (Above-the-fold Quick Discovery) -->
-            <div class="hero-products-strip" *ngIf="!isLoadingNewArrivals && newArrivals.length > 0">
-              <span class="hero-products-strip__label">QUICK ACCESS:</span>
-              <div class="hero-products-strip__list">
+            <!-- ── Peek Drawer: Bottom-Center Expandable Product Panel ──── -->
+            <div
+              class="peek-drawer"
+              [class.peek-drawer--open]="peekDrawerOpen"
+              *ngIf="!isLoadingNewArrivals && newArrivals.length > 0"
+              (mouseenter)="openPeekDrawer()"
+              (mouseleave)="closePeekDrawer()"
+            >
+              <!-- Collapsed Tab -->
+              <button
+                class="peek-drawer__tab"
+                (click)="togglePeekDrawer()"
+                [attr.aria-expanded]="peekDrawerOpen"
+                aria-controls="peek-drawer-body"
+              >
+                <span class="peek-drawer__tab-label">
+                  {{ newArrivals.slice(0,3).length }} FEATURED PIECES
+                </span>
+                <span class="peek-drawer__tab-arrow">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <polyline points="2,9 6,3 10,9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </button>
+
+              <!-- Expandable Product Cards Body -->
+              <div id="peek-drawer-body" class="peek-drawer__body" role="region" aria-label="Featured products">
                 <button
                   *ngFor="let product of newArrivals.slice(0, 3)"
-                  class="hp-strip-card"
+                  class="peek-card"
                   (click)="navigateToProduct(product._id)"
-                  [attr.aria-label]="'Shop ' + product.title"
+                  [attr.aria-label]="'View ' + product.title"
                 >
-                  <div class="hp-strip-card__img-wrap">
-                    <img *ngIf="getProductImage(product)" [src]="getProductImage(product)" [alt]="product.title" loading="lazy" />
+                  <!-- Product image -->
+                  <div class="peek-card__img-wrap">
+                    <img
+                      *ngIf="getProductImage(product)"
+                      [src]="getProductImage(product)"
+                      [alt]="product.title"
+                      loading="lazy"
+                      class="peek-card__img"
+                    />
+                    <div class="peek-card__img-placeholder" *ngIf="!getProductImage(product)" aria-hidden="true"></div>
+                    <span class="peek-card__badge" *ngIf="product.discountPrice && product.discountPrice > 0">SALE</span>
                   </div>
-                  <div class="hp-strip-card__info">
-                    <span class="hp-strip-card__title">{{ product.title }}</span>
-                    <span class="hp-strip-card__price">
-                      EGP {{ (product.discountPrice && product.discountPrice > 0 ? (product.basePrice - product.discountPrice) : product.basePrice) | number }}
+                  <!-- Product info -->
+                  <div class="peek-card__info">
+                    <span class="peek-card__title">{{ product.title }}</span>
+                    <span class="peek-card__price">
+                      <span *ngIf="product.discountPrice && product.discountPrice > 0" class="peek-card__price--old">
+                        EGP {{ product.basePrice | number }}
+                      </span>
+                      EGP {{ (product.discountPrice && product.discountPrice > 0
+                        ? product.basePrice - product.discountPrice
+                        : product.basePrice) | number }}
                     </span>
+                    <span class="peek-card__cta">VIEW PRODUCT →</span>
                   </div>
                 </button>
               </div>
