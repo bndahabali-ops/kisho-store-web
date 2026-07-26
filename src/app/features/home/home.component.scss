@@ -617,6 +617,9 @@
     }
 
     .btn-primary {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
       padding: var(--space-4) var(--space-8);
       font-size: var(--text-sm);
       letter-spacing: 0.1em;
@@ -635,6 +638,7 @@
         padding: 14px var(--space-6);
         font-size: var(--text-xs);
         text-align: center;
+        justify-content: center;
       }
 
       &:hover {
