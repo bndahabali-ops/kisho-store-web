@@ -9,7 +9,7 @@
 [build]
   # The Angular CLI build command targeting the production configuration.
   # This triggers fileReplacements → swaps environment.ts with environment.prod.ts
-  # injecting: https://kisho-store-production.up.railway.app/api
+  # injecting: https://kisho-store-backend-production.up.railway.app/api
   command = "npm ci && npx ng build --configuration production"
 
   # Angular 16 (builder: @angular-devkit/build-angular:browser) outputs
